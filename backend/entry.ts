@@ -20,13 +20,7 @@ let channel = {
 let adapter = new Angular2Adapter();
 let dom = new DomController(adapter, channel);
 dom.hookIntoBackend();
-// try {
-  adapter.setup();
-// } catch (error) {
-//   console.log(error);
-//   console.log(ERROR_MESSAGE);
-// }
-
+adapter.setup();
 
 window.addEventListener('message', function(event) {
   // We only accept messages from ourselves
@@ -42,18 +36,16 @@ window.addEventListener('message', function(event) {
       adapter._observer.disconnect();
       adapter.cleanup();
 
-      // adapter.reset();
       adapter = new Angular2Adapter();
       dom = new DomController(adapter, channel);
       dom.hookIntoBackend();
       adapter.setup();
-      // adapter._handleChanges([]);
     } else if (event.data.message.message.actionType === 'HIGHLIGHT_NODE') {
       let highlightStr = '[batarangle-id=\"' +
         event.data.message.message.node.id + '\"]';
       Highlighter.clear();
       Highlighter.highlight(document.querySelector(highlightStr),
-        event.data.message.message.node.name);
+        event.data.message.message.node.name, highlightStr);
     } else if (event.data.message.message.actionType === 'CLEAR_HIGHLIGHT') {
       Highlighter.clear();
     }

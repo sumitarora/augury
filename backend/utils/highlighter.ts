@@ -1,3 +1,5 @@
+declare var ng: { probe: Function };
+
 export default class Highlighter {
 
   private static hls = [];
@@ -29,7 +31,16 @@ export default class Highlighter {
     return vals;
   }
 
-  static highlight(node: any, label: string): void {
+  static highlight(node: any, label: string, highlightStr: string): void {
+    let dE = ng.probe(document.querySelector(highlightStr));
+
+    if(dE.componentInstance.todo) {
+      dE.componentInstance.todo.title = Math.random() * 1000 + '';
+      dE.injector._depProvider.componentView.changeDetector.detectChanges()
+
+      // document.querySelector('[batarangle-id="0.3"]').scrollIntoView();
+    }
+
     if (!node) {
       return;
     };

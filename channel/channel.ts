@@ -42,3 +42,15 @@ chrome.runtime.onMessage.addListener(
 
     return true;
   });
+
+chrome.runtime.onInstalled.addListener(function() {
+  chrome.contextMenus.create({
+    title: 'My menu',
+    id: 'menu1', // you'll use this in the handler function to identify this context menu item
+    contexts: ['all'],
+  });
+});
+
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  console.log(info, tab);
+});
