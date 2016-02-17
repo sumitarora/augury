@@ -22,8 +22,7 @@ let channel = {
 let adapter = new Angular2Adapter();
 let dom = new DomController(adapter, channel);
 dom.hookIntoBackend();
-  adapter.setup();
-
+adapter.setup();
 
 window.addEventListener('message', function(event) {
   // We only accept messages from ourselves

@@ -23,7 +23,12 @@ chrome.runtime.sendMessage({
   });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.name === 'init') {
+
+  console.log(message);
+
+  if (message === 'open-batarangle') {
+    document.dispatchEvent(new CustomEvent('inspectscope'));
+  } else if (message.name === 'init') {
     injectEntry();
     return;
   }
@@ -45,3 +50,15 @@ window.addEventListener('message', function(event) {
     });
   }
 }, false);
+
+window.addEventListener('load', (event) => {
+  let element = null
+
+  document.addEventListener("mousedown", (event) => {
+    element = event.target;
+  }, true);
+
+  document.addEventListener('inspectscope', () => {
+    console.log('inspectscope', element);
+  });
+});

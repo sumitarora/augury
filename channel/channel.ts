@@ -32,6 +32,9 @@ chrome.runtime.onConnect.addListener(port => {
 // relay to the devTools page for the current tab
 chrome.runtime.onMessage.addListener(
   (message, sender, sendResponse) => {
+
+    console.log(message, sender);
+
     // Messages from content scripts should have sender.tab set
     if (sender.tab && connections.has(sender.tab.id)) {
       if (message.from === 'content-script') {
@@ -42,3 +45,16 @@ chrome.runtime.onMessage.addListener(
 
     return true;
   });
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    title: 'Inspect using Batarangle',
+    id: 'open-batarangle',
+    contexts: ['all'],
+  });
+});
+
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  console.log(info, tab);
+  chrome.tabs.sendMessage(tab.id, 'open-batarangle');
+});

@@ -4,7 +4,8 @@
   "description": "Extends the Developer Tools, adding tools for debugging and profiling Angular 2.0 applications.",
   "permissions": [
     "tabs",
-    "<all_urls>"
+    "<all_urls>",
+    "contextMenus"
   ],
   "devtools_page": "index.html",
   "background": {
