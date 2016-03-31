@@ -46,7 +46,7 @@
     "zone.js": "0.6.8"
   },
   "devDependencies": {
-    "autoprefixer": "^6.3.1",
+    "autoprefixer": "^6.3.5",
     "css-loader": "^0.21.0",
     "file-loader": "^0.8.5",
     "object-assign": "4.0.1",
