@@ -3,6 +3,8 @@ import {Component, ElementRef, Inject, EventEmitter,
   OnChanges}
   from 'angular2/core';
 
+import {UserActions} from '../../actions/user-actions/user-actions';
+
 import Accordion from '../accordion/accordion';
 import ParseData from '../../utils/parse-data';
 import RenderState from '../render-state/render-state';
@@ -20,18 +22,19 @@ export default class ComponentInfo {
   private _input: Array<any>;
 
   constructor(
-    @Inject(ElementRef) private elementRef: ElementRef
+    @Inject(ElementRef) private elementRef: ElementRef,
+    private userActions: UserActions
   ) { }
 
   ngOnChanges(change: any) {
     if (this.node) {
       this.normalizeInput();
-      this.displayTree();
+      setTimeout(() => this.displayTree());
     }
   }
 
   viewComponentSource($event) {
-    const highlightStr = '[batarangle-id=\"' + this.node.id + '\"]';
+    const highlightStr = '[augury-id=\"' + this.node.id + '\"]';
 
     let evalStr = `inspect(ng.probe(document.querySelector('${highlightStr}'))
     .componentInstance.constructor)`;
@@ -60,6 +63,33 @@ export default class ComponentInfo {
         });
       });
     }
+  }
+
+  isJson(data: string): boolean {
+    let isJson: boolean = false;
+    if (data.indexOf('{') !== 0) {
+      isJson = false;
+    } else {
+      try {
+        JSON.parse(data);
+        isJson = true;
+      } catch (ex) {
+        console.log(ex);
+      }
+    }
+    return isJson;
+  }
+
+  fireEvent(output: string, param: any) {
+    if (this.isJson(param)) {
+      param = JSON.parse(param);
+    }
+
+    this.userActions.fireEvent({
+      'output': output,
+      'data': param,
+      'id': this.node.id
+    });
   }
 
   displayTree(): void {

@@ -5,7 +5,7 @@
  * the state of the components (e.g. mount ops/locations, state changes,
  * performance profile, etc...).
  *
- * For more information, see the Base Adapater (./base.ts).
+ * For more information, see the Base Adapter (./base.ts).
  *
  * Interface:
  * - setup
@@ -20,14 +20,12 @@ declare var getAllAngularRootElements: Function;
 declare var Reflect: { getOwnMetadata: Function };
 
 import { ChangeDetectionStrategy } from 'angular2/core';
-import { DirectiveProvider } from 'angular2/src/core/linker/element';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { TreeNode, BaseAdapter } from './base';
 import { Description } from '../utils/description';
 import { ParseRouter } from '../utils/parse-router';
-import { DirectiveResolver } from '../directive-resolver';
 
 export class Angular2Adapter extends BaseAdapter {
   _tree: any = {};
@@ -119,9 +117,10 @@ export class Angular2Adapter extends BaseAdapter {
     const dependencies = this._getComponentDependencies(debugEl);
     const changeDetection = this._getComponentCD(debugEl);
     const injectors = this._getComponentInjectors(debugEl, dependencies);
+    const directives = this._getComponentDirectives(debugEl);
 
     description.unshift({
-      key: 'b-id',
+      key: 'a-id',
       value: id
     });
 
@@ -136,7 +135,8 @@ export class Angular2Adapter extends BaseAdapter {
       isOpen: true,
       dependencies,
       changeDetection,
-      injectors
+      injectors,
+      directives
     };
   }
 
@@ -156,15 +156,15 @@ export class Angular2Adapter extends BaseAdapter {
     const nodeName = this._getComponentName(compEl);
 
     // When encounter a template comment, insert another comment with
-    // batarangle-id above it.
+    // augury-id above it.
     if (nativeElement.nodeType === Node.COMMENT_NODE) {
-      const commentNode = document.createComment(`{"batarangle-id": "${idx}"}`);
+      const commentNode = document.createComment(`{"augury-id": "${idx}"}`);
       if (nativeElement.previousSibling === null
         || !nativeElement.previousSibling.isEqualNode(commentNode)) {
         nativeElement.parentNode.insertBefore(commentNode, nativeElement);
       }
     } else {
-      (<HTMLElement>nativeElement).setAttribute('batarangle-id', idx);
+      (<HTMLElement>nativeElement).setAttribute('augury-id', idx);
     }
 
     if (isRoot) {
@@ -190,6 +190,18 @@ export class Angular2Adapter extends BaseAdapter {
 
   _getNativeElement(compEl: any): Element {
     return compEl.nativeElement;
+  }
+
+  _getComponentDirectives(compEl: any) {
+    const metadata = Reflect.getOwnMetadata('annotations',
+      compEl.componentInstance.constructor);
+
+    const directives = [];
+    if (metadata && metadata.length > 0 && metadata[0].directives) {
+      metadata[0].directives.forEach((directive) =>
+        directives.push(this.getFunctionName(directive)));
+    }
+    return directives;
   }
 
   _getComponentCD(compEl: any) {
@@ -226,10 +238,10 @@ export class Angular2Adapter extends BaseAdapter {
     const nativeElement = this._getComponentRef(compEl);
     let id;
     if (nativeElement.nodeType !== Node.COMMENT_NODE) {
-      id = nativeElement.getAttribute('batarangle-id');
+      id = nativeElement.getAttribute('augury-id');
     } else {
       const comment = JSON.parse((<any>nativeElement.previousSibling).data);
-      id = comment['batarangle-id'];
+      id = comment['augury-id'];
     }
     return id;
   }

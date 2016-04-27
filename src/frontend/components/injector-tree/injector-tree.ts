@@ -1,6 +1,7 @@
 import {Component, AfterViewInit, ViewEncapsulation, OnChanges, Inject,
   ElementRef, Input, EventEmitter}
   from 'angular2/core';
+import {NgClass} from 'angular2/common';
 
 import * as d3 from 'd3';
 
@@ -59,7 +60,7 @@ export default class InjectorTree implements OnChanges {
       if (this.selectedNode.injectors.indexOf(dependency) === -1) {
         const parent = this.parseUtils.getDependencyLink
           (this.flattenedTree, this.selectedNode.id, dependency);
-        if (!parent) {
+        if (!parent && this.flattenedTree && this.flattenedTree.length > 0) {
           this.flattenedTree[0].injectors.push(dependency);
         }
       }
@@ -85,8 +86,8 @@ export default class InjectorTree implements OnChanges {
 
     this.svg = d3.select(graphContainer)
       .append('svg')
-      .attr('height', this.parentHierarchy.length * 120 + 30)
-      .attr('width', 600);
+      .attr('height', this.parentHierarchy.length * 120 + 50)
+      .attr('width', 1500);
 
     this.render();
   }

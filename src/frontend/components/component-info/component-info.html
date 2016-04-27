@@ -21,6 +21,16 @@
       </section-content>
     </accordion>
 
+    <accordion [sectionTitle]='"Directives"' *ngIf="node && node.directives && node.directives.length > 0">
+      <section-content>
+        <ul class="list-reset m0">
+            <li *ngFor="#directive of node.directives">
+                <span class="inline-block info-key">{{directive}}</span>
+            </li>
+        </ul>
+      </section-content>
+    </accordion>
+
     <accordion *ngIf="node && node.changeDetection" [sectionTitle]='"Change Detection"'>
       <section-content>
         {{node.changeDetection}}
@@ -41,8 +51,13 @@
     <accordion [sectionTitle]='"Output"' *ngIf="node && node.output && node.output.length > 0">
       <section-content>
         <ul class="list-reset m0">
-            <li *ngFor="#output of node.output">
-                <span class="info-key inline-block">{{output}}</span>
+            <li *ngFor="#output of node.output; ">
+                <span class="info-key inline-block">{{output}}
+                  <input type="text" #prop class="info-editable">
+                  <button
+                   class="btn btn-primary mb1 bg-olive"
+                   (click)="fireEvent(output, prop.value)">Fire</button>
+                </span>
             </li>
         </ul>
       </section-content>
