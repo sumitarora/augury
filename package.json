@@ -37,7 +37,7 @@
     "crypto": "0.0.3",
     "d3": "^3.5.16",
     "es6-promise": "^3.1.2",
-    "es6-shim": "^0.35.0",
+    "es6-shim": "^0.35.1",
     "file-loader": "^0.8.5",
     "immutable": "^3.7.6",
     "json-formatter-js": "^0.3.0",
